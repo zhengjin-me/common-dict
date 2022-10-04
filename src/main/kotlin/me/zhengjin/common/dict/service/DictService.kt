@@ -81,13 +81,11 @@ class DictService(
      */
     fun dictSearch(vo: DictSearchVO): Page<Dict.CodeName> {
         dictAdapters.forEach {
-            if (it.support(vo.type!!)) {
-                return it.handler(vo)
+            if (it.dictSupport(vo.type!!)) {
+                return it.dictHandler(vo.searchData!!, vo.searchType, vo.type!!, vo.nameType, vo.getPageable())
             }
         }
-        val dict = list(vo)
-        val dictContent = dict.content.map { x -> x.generatorCodeName(vo.nameType) }
-        return PageImpl(dictContent, vo.getPageable(), dict.totalElements)
+        return PageImpl(emptyList(), vo.getPageable(), 0)
     }
 
     /**
@@ -97,7 +95,7 @@ class DictService(
     fun saveOrUpdateDictOrType(vo: Dict) {
         ServiceException.requireNotNullOrBlank(vo.code) { "代码不能为空!" }
         ServiceException.requireNotNullOrBlank(vo.name) { "中文名称不能为空!" }
-        if (vo.id.isNullOrBlank()) {
+        if (vo.id == null) {
             check("code", vo.type, vo.code)
             // 如果是字典类型 自动处理排序序号
             if (vo.type.isNullOrBlank()) {
@@ -121,11 +119,11 @@ class DictService(
      * 移除
      */
     @Transactional
-    fun removeDictOrType(ids: List<String>) {
+    fun removeDictOrType(ids: List<Long>) {
         dictRepository.softDelete(ids.toMutableList())
     }
 
-    fun check(checkType: String, dictType: String?, data: String?, id: String? = null) {
+    fun check(checkType: String, dictType: String?, data: String?, id: Long? = null) {
         if (data.isNullOrBlank()) return
         ServiceException.requireNotNullOrBlank(checkType) { "类型不能为空" }
         if (!arrayOf("code", "name", "englishName").contains(checkType)) {
@@ -138,7 +136,7 @@ class DictService(
             "englishName" -> expression.and(dictDomain.englishName.eq(data))
             else -> throw ServiceException(message = "不支持的类型: $checkType", type = ServiceException.Exceptions.ILLEGAL_ARGUMENT)
         }
-        if (!id.isNullOrBlank()) {
+        if (id != null) {
             expression = expression.and(dictDomain.id.ne(id))
         }
         val exists = dictRepository.exists(expression)

@@ -43,7 +43,7 @@ class DictController(
     }
 
     @PostMapping("/delete")
-    fun delete(@RequestBody ids: List<String>): HttpResult<String> {
+    fun delete(@RequestBody ids: List<Long>): HttpResult<String> {
         dictService.removeDictOrType(ids)
         return HttpResult.ok("操作成功")
     }
@@ -53,7 +53,7 @@ class DictController(
         @RequestParam checkType: String,
         @RequestParam(required = false) dictType: String?,
         @RequestParam(required = false) data: String?,
-        @RequestParam(required = false) id: String?
+        @RequestParam(required = false) id: Long?
     ): HttpResult<String> {
         dictService.check(checkType, dictType, data, id)
         return HttpResult.ok(null)

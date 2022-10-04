@@ -3,13 +3,13 @@ package me.zhengjin.common.dict.repository
 import me.zhengjin.common.core.repository.QuerydslBaseRepository
 import me.zhengjin.common.dict.po.Dict
 
-interface DictRepository : QuerydslBaseRepository<Dict, String> {
+interface DictRepository : QuerydslBaseRepository<Dict, Long> {
 
     fun findAllByTypeNullAndDeleteFalse(): List<Dict>
 
-    fun findByIdAndDeleteFalse(id: String): Dict?
+    fun findByIdAndDeleteFalse(id: Long): Dict?
 
-    fun findAllByIdInAndDeleteFalse(ids: List<String>): List<Dict>
+    fun findAllByIdInAndDeleteFalse(ids: List<Long>): List<Dict>
 
     fun findByTypeAndDeleteFalse(type: String): List<Dict>
 

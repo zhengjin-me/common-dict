@@ -34,8 +34,10 @@ val mavenPassword = (findProperty("MAVEN_CENTER_PASSWORD") ?: System.getenv("MAV
 val querydslVersion: String by project
 val commonCoreVersion: String by project
 val commonUtilsVersion: String by project
+val hutoolVersion: String by project
 
 group = "me.zhengjin"
+// version = "1.0.0-1-SNAPSHOT"
 // 使用最新的tag名称作为版本号
 // version = { ext["latestTagVersion"] }
 
@@ -76,6 +78,7 @@ dependencies {
     api("com.fasterxml.jackson.module:jackson-module-kotlin")
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     api("org.springframework.data:spring-data-commons")
+    api("cn.hutool:hutool-cache:$hutoolVersion")
     api(kotlin("reflect"))
     api(kotlin("stdlib-jdk8"))
     testCompileOnly("org.springframework.boot:spring-boot-starter-test") {
@@ -189,7 +192,9 @@ tasks {
             return@use Regex("^v?(?<version>\\d+\\.\\d+.\\d+(?:-SNAPSHOT|-snapshot)?)\$").matchEntire(tagName)?.groups?.get("version")?.value
                 ?: throw IllegalStateException("Failed to get latest tag version, tagName: [$tagName]")
         }
-        project.version = ext["latestTagVersion"]!!
+        if (version == "") {
+            version = ext["latestTagVersion"]!!
+        }
         ext["isReleaseVersion"] = !version.toString().endsWith("SNAPSHOT", true)
         println("当前构建产物: [${project.group}:${project.name}:${project.version}]")
     }

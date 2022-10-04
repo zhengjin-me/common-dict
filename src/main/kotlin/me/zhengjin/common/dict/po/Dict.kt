@@ -2,6 +2,7 @@ package me.zhengjin.common.dict.po
 
 import me.zhengjin.common.core.entity.BaseEntity
 import me.zhengjin.common.core.jpa.comment.annotation.JpaComment
+import me.zhengjin.common.dict.enums.DictNameType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
@@ -61,11 +62,11 @@ class Dict : BaseEntity() {
         var name: String? = null
     )
 
-    fun generatorCodeName(nameType: String?): CodeName {
+    fun generatorCodeName(nameType: DictNameType?): CodeName {
         return when (nameType) {
-            "english" -> CodeName(code, englishName)
-            "code" -> CodeName(code, code)
-            "name" -> CodeName(code, name)
+            DictNameType.ENGLISH -> CodeName(code, englishName)
+            DictNameType.CODE -> CodeName(code, code)
+            DictNameType.NAME -> CodeName(code, name)
             else -> CodeName(code, name)
         }
     }
