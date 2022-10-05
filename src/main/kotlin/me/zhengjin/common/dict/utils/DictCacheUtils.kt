@@ -1,4 +1,4 @@
-package me.zhengjin.common.dict
+package me.zhengjin.common.dict.utils
 
 import cn.hutool.cache.CacheUtil
 import me.zhengjin.common.dict.controller.vo.DictSearchVO

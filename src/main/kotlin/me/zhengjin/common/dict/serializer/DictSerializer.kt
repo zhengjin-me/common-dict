@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.BeanProperty
 import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.ser.ContextualSerializer
-import me.zhengjin.common.dict.DictCacheUtils
 import me.zhengjin.common.dict.annotation.Dict
+import me.zhengjin.common.dict.utils.DictCacheUtils
 import org.slf4j.LoggerFactory
 
 /**
