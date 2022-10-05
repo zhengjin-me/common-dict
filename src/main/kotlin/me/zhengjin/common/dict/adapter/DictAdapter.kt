@@ -16,7 +16,7 @@ interface DictAdapter {
     fun dictSupport(type: String): Boolean
 
     /**
-     * @param searchData    字典查询时的传入内容
+     * @param searchData    字典查询时的传入内容,如为空应进行默认查询
      * @param searchType    查询类型
      * @param dictType      字典类型
      * @param nameType      查询结果name取值
@@ -25,7 +25,7 @@ interface DictAdapter {
      * 字典查询, 必须实现 searchType === CODE_EXACT 精准查询适配
      */
     fun dictHandler(
-        searchData: String,
+        searchData: String?,
         searchType: DictSearchType,
         dictType: String,
         nameType: DictNameType,

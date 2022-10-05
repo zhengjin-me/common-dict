@@ -1,6 +1,5 @@
 package me.zhengjin.common.dict.adapter
 
-import com.querydsl.core.types.Predicate
 import com.querydsl.core.types.Projections
 import me.zhengjin.common.core.jpa.JpaHelper
 import me.zhengjin.common.core.jpa.querydsl.applyPagination
@@ -36,25 +35,24 @@ class SystemDictAdapter : DictAdapter {
      * 字典查询, 必须实现 searchType === CODE_EXACT 精准查询适配
      */
     override fun dictHandler(
-        searchData: String,
+        searchData: String?,
         searchType: DictSearchType,
         dictType: String,
         nameType: DictNameType,
         pageable: Pageable
     ): Page<Dict.CodeName> {
-        val conditions = mutableListOf<Predicate>()
-        conditions.add(dictDomain.delete.isFalse)
-        conditions.add(dictDomain.type.eq(dictType))
-        conditions.add(
-            when (searchType) {
-                DictSearchType.CODE_EXACT -> dictDomain.code.eq(searchData)
-                DictSearchType.CODE_LIKE -> dictDomain.code.like("%$searchData%")
-                DictSearchType.NAME_EXACT -> dictDomain.name.eq(searchData)
-                DictSearchType.NAME_LIKE -> dictDomain.name.like("%$searchData%")
-                DictSearchType.NONE -> dictDomain.code.like("%$searchData%").or(dictDomain.name.like("%$searchData%"))
-            }
-        )
-
+        var condition = dictDomain.delete.isFalse.and(dictDomain.type.eq(dictType))
+        if (!searchData.isNullOrBlank()) {
+            condition = condition.and(
+                when (searchType) {
+                    DictSearchType.CODE_EXACT -> dictDomain.code.eq(searchData)
+                    DictSearchType.CODE_LIKE -> dictDomain.code.like("%$searchData%")
+                    DictSearchType.NAME_EXACT -> dictDomain.name.eq(searchData)
+                    DictSearchType.NAME_LIKE -> dictDomain.name.like("%$searchData%")
+                    DictSearchType.NONE -> dictDomain.code.like("%$searchData%").or(dictDomain.name.like("%$searchData%"))
+                }
+            )
+        }
         return JpaHelper.getJPAQueryFactory()
             .select(
                 Projections.bean(
@@ -68,7 +66,7 @@ class SystemDictAdapter : DictAdapter {
                 )
             )
             .from(dictDomain)
-            .where(*conditions.toTypedArray())
+            .where(condition)
             .applyPagination(pageable)
             .fetchPage()
     }
