@@ -192,7 +192,7 @@ tasks {
             return@use Regex("^v?(?<version>\\d+\\.\\d+.\\d+(?:-SNAPSHOT|-snapshot)?)\$").matchEntire(tagName)?.groups?.get("version")?.value
                 ?: throw IllegalStateException("Failed to get latest tag version, tagName: [$tagName]")
         }
-        if (version == "") {
+        if (version == "unspecified") {
             version = ext["latestTagVersion"]!!
         }
         ext["isReleaseVersion"] = !version.toString().endsWith("SNAPSHOT", true)
