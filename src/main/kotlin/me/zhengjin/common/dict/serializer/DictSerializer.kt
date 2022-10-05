@@ -27,6 +27,7 @@ class DictSerializer(
             return
         }
         if (value == null) {
+            gen?.writeObject(me.zhengjin.common.dict.po.Dict.CodeName())
             return
         }
         if ("" == dict.separator) {
