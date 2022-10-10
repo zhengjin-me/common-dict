@@ -82,7 +82,7 @@ class DictService(
     fun dictSearch(vo: DictSearchVO): Page<Dict.CodeName> {
         dictAdapters.forEach {
             if (it.dictSupport(vo.type!!)) {
-                return it.dictHandler(vo.searchData!!, vo.searchType, vo.type!!, vo.nameType, vo.getPageable())
+                return it.dictHandler(vo.searchData, vo.searchType, vo.type!!, vo.nameType, vo.getPageable())
             }
         }
         return PageImpl(emptyList(), vo.getPageable(), 0)

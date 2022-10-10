@@ -28,7 +28,7 @@ class DictController(
     }
 
     @PostMapping("/{type}/list")
-    fun dictList(@RequestBody vo: DictSearchVO?, @PathVariable type: String?): HttpResult<PageResult<Dict.CodeName>> {
+    fun dictList(@RequestBody vo: DictSearchVO?, @PathVariable type: String): HttpResult<PageResult<Dict.CodeName>> {
         val dictSearchData by lazy {
             vo ?: DictSearchVO()
         }

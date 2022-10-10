@@ -21,13 +21,9 @@ class DictSerializer(
         private val logger = LoggerFactory.getLogger(DictSerializer::class.java)
     }
 
-    override fun serialize(value: String?, gen: JsonGenerator?, serializers: SerializerProvider?) {
+    override fun serialize(value: String, gen: JsonGenerator?, serializers: SerializerProvider?) {
         if (dict == null) {
             logger.error("dict annotation not found")
-            return
-        }
-        if (value == null) {
-            gen?.writeObject(me.zhengjin.common.dict.po.Dict.CodeName())
             return
         }
         if ("" == dict.separator) {
