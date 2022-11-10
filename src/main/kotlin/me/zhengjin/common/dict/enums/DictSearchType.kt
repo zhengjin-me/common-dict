@@ -7,6 +7,10 @@ package me.zhengjin.common.dict.enums
  **/
 enum class DictSearchType {
     /**
+     * ID 精准查询
+     */
+    ID,
+    /**
      * CODE 精准查询
      */
     CODE_EXACT,

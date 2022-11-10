@@ -1,5 +1,7 @@
 package me.zhengjin.common.dict.po
 
+import me.zhengjin.common.core.encryptor.annotation.IdDecrypt
+import me.zhengjin.common.core.encryptor.annotation.IdEncrypt
 import me.zhengjin.common.core.entity.BaseEntity
 import me.zhengjin.common.core.jpa.comment.annotation.JpaComment
 import me.zhengjin.common.dict.enums.DictNameType
@@ -59,15 +61,20 @@ class Dict : BaseEntity() {
 
     class CodeName(
         var code: String? = null,
-        var name: String? = null
+        var name: String? = null,
+        @field:[
+            IdEncrypt
+            IdDecrypt
+        ]
+        var id: Long? = null
     )
 
     fun generatorCodeName(nameType: DictNameType?): CodeName {
         return when (nameType) {
-            DictNameType.ENGLISH -> CodeName(code, englishName)
-            DictNameType.CODE -> CodeName(code, code)
-            DictNameType.NAME -> CodeName(code, name)
-            else -> CodeName(code, name)
+            DictNameType.ENGLISH -> CodeName(code, englishName, id)
+            DictNameType.CODE -> CodeName(code, code, id)
+            DictNameType.NAME -> CodeName(code, name, id)
+            else -> CodeName(code, name, id)
         }
     }
 }
