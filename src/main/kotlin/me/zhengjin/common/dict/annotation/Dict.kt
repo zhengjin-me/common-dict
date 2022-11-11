@@ -13,7 +13,7 @@ import me.zhengjin.common.dict.serializer.DictSerializer
  * @create 2022-09-30 16:23
  **/
 @MustBeDocumented
-@Target(AnnotationTarget.FIELD)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY_GETTER)
 @Retention(AnnotationRetention.RUNTIME)
 @JacksonAnnotationsInside
 @JsonSerialize(using = DictSerializer::class)

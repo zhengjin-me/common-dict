@@ -45,6 +45,7 @@ class SystemDictAdapter : DictAdapter {
         if (!searchData.isNullOrBlank()) {
             condition = condition.and(
                 when (searchType) {
+                    DictSearchType.ID -> dictDomain.id.eq(searchData.toLong())
                     DictSearchType.CODE_EXACT -> dictDomain.code.eq(searchData)
                     DictSearchType.CODE_LIKE -> dictDomain.code.like("%$searchData%")
                     DictSearchType.NAME_EXACT -> dictDomain.name.eq(searchData)

@@ -37,7 +37,7 @@ val commonUtilsVersion: String by project
 val hutoolVersion: String by project
 
 group = "me.zhengjin"
-// version = "1.0.4-2-SNAPSHOT"
+// version = "1.0.6-4-SNAPSHOT"
 // 使用最新的tag名称作为版本号
 // version = { ext["latestTagVersion"] }
 

@@ -27,7 +27,7 @@ object DictCacheUtils {
         }
     }
 
-    fun get(dictType: String, nameType: DictNameType, dictCode: String): Dict.CodeName {
+    fun get(dictType: String, nameType: DictNameType, dictCode: String, searchType: DictSearchType = DictSearchType.CODE_EXACT): Dict.CodeName {
         val cache = dictCache.get(dictType)
         if (cache != null) {
             val key = "$dictCode|${nameType.name}"
@@ -37,7 +37,7 @@ object DictCacheUtils {
         }
         // 无缓存
         val dictService = SpringBeanUtils.getBean(DictService::class.java)
-        val result = dictService.dictSearch(DictSearchVO(type = dictType, nameType = nameType, searchType = DictSearchType.CODE_EXACT, searchData = dictCode))
+        val result = dictService.dictSearch(DictSearchVO(type = dictType, nameType = nameType, searchType = searchType, searchData = dictCode))
         if (result.isEmpty) {
             throw IllegalArgumentException("未查询到字典[$dictType]中存在code=[$dictCode]的信息")
         }

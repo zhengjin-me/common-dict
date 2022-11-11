@@ -29,7 +29,7 @@ class DictSerializer(
             return
         }
         if ("" == dict.separator) {
-            val codeName = DictCacheUtils.get(dict.type, dict.nameType, value)
+            val codeName = DictCacheUtils.get(dict.type, dict.nameType, value, dict.searchType)
             when (dict.serialize) {
                 DictSerializeEnum.DICT_DATA -> gen?.writeObject(codeName)
                 DictSerializeEnum.CODE_STRING -> gen?.writeString(codeName.code)
@@ -44,7 +44,7 @@ class DictSerializer(
             }
         } else {
             val codeNames = value.split(dict.separator).map {
-                DictCacheUtils.get(dict.type, dict.nameType, it)
+                DictCacheUtils.get(dict.type, dict.nameType, it, dict.searchType)
             }
             when (dict.serialize) {
                 DictSerializeEnum.DICT_DATA -> gen?.writeObject(codeNames)
