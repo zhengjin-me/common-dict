@@ -96,7 +96,11 @@ class DictService(
         ServiceException.requireNotNullOrBlank(vo.code) { "代码不能为空!" }
         ServiceException.requireNotNullOrBlank(vo.name) { "中文名称不能为空!" }
         if (vo.id == null) {
-            check("code", vo.type, vo.code)
+            if (vo.type.isNullOrBlank()) {
+                check("type", vo.code, vo.code)
+            } else {
+                check("code", vo.type, vo.code)
+            }
             // 如果是字典类型 自动处理排序序号
             if (vo.type.isNullOrBlank()) {
                 val list = dictRepository.findAllByTypeNullAndDeleteFalse()
@@ -104,6 +108,8 @@ class DictService(
             }
             dictRepository.save(vo)
         } else {
+            // 界面只能修改字典项
+            check("code", vo.type, vo.code)
             val dict = dictRepository.findByIdAndDeleteFalse(vo.id!!) ?: throw ServiceException(message = "dict can not be found", type = ServiceException.Exceptions.ILLEGAL_ARGUMENT)
             dict.code = vo.code
             dict.name = vo.name
@@ -126,14 +132,12 @@ class DictService(
     fun check(checkType: String, dictType: String?, data: String?, id: Long? = null) {
         if (data.isNullOrBlank()) return
         ServiceException.requireNotNullOrBlank(checkType) { "类型不能为空" }
-        if (!arrayOf("code", "name", "englishName").contains(checkType)) {
-            throw IllegalStateException("不支持的类型: $checkType")
-        }
         var expression = dictDomain.delete.isFalse.and(dictDomain.type.eq(dictType))
         expression = when (checkType) {
             "code" -> expression.and(dictDomain.code.eq(data))
             "name" -> expression.and(dictDomain.name.eq(data))
             "englishName" -> expression.and(dictDomain.englishName.eq(data))
+            "type" -> expression
             else -> throw ServiceException(message = "不支持的类型: $checkType", type = ServiceException.Exceptions.ILLEGAL_ARGUMENT)
         }
         if (id != null) {
@@ -145,6 +149,7 @@ class DictService(
                 "code" -> throw ServiceException(message = "代码 [$data] 已存在", type = ServiceException.Exceptions.ILLEGAL_ARGUMENT)
                 "name" -> throw ServiceException(message = "中文名称 [$data] 已存在", type = ServiceException.Exceptions.ILLEGAL_ARGUMENT)
                 "englishName" -> throw ServiceException(message = "英文名称 [$data] 已存在", type = ServiceException.Exceptions.ILLEGAL_ARGUMENT)
+                "type" -> throw ServiceException(message = "字典类型 [$data] 已存在", type = ServiceException.Exceptions.ILLEGAL_ARGUMENT)
                 else -> throw ServiceException(message = "不支持的类型: $checkType", type = ServiceException.Exceptions.ILLEGAL_ARGUMENT)
             }
         }
