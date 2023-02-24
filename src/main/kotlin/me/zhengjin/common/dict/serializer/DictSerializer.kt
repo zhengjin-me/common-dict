@@ -18,18 +18,18 @@ import org.slf4j.LoggerFactory
  **/
 class DictSerializer(
     private val dict: Dict? = null
-) : JsonSerializer<String>(), ContextualSerializer {
+) : JsonSerializer<Any>(), ContextualSerializer {
     companion object {
         private val logger = LoggerFactory.getLogger(DictSerializer::class.java)
     }
 
-    override fun serialize(value: String, gen: JsonGenerator?, serializers: SerializerProvider?) {
+    override fun serialize(value: Any, gen: JsonGenerator?, serializers: SerializerProvider?) {
         if (dict == null) {
             logger.error("dict annotation not found")
             return
         }
         if ("" == dict.separator) {
-            val codeName = DictCacheUtils.get(dict.type, dict.nameType, value, dict.searchType)
+            val codeName = DictCacheUtils.get(dict.type, dict.nameType, value.toString(), dict.searchType)
             when (dict.serialize) {
                 DictSerializeEnum.DICT_DATA -> gen?.writeObject(codeName)
                 DictSerializeEnum.CODE_STRING -> gen?.writeString(codeName.code)
@@ -43,7 +43,7 @@ class DictSerializer(
                 }
             }
         } else {
-            val codeNames = value.split(dict.separator).map {
+            val codeNames = value.toString().split(dict.separator).map {
                 DictCacheUtils.get(dict.type, dict.nameType, it, dict.searchType)
             }
             when (dict.serialize) {
