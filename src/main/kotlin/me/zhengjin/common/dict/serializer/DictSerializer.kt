@@ -23,12 +23,15 @@ class DictSerializer(
         private val logger = LoggerFactory.getLogger(DictSerializer::class.java)
     }
 
-    override fun serialize(value: Any, gen: JsonGenerator?, serializers: SerializerProvider?) {
+    override fun serialize(value: Any?, gen: JsonGenerator?, serializers: SerializerProvider?) {
         if (dict == null) {
             logger.error("dict annotation not found")
             return
         }
-        if ("" == dict.separator) {
+        if (value == null) {
+            gen?.writeNull()
+        }
+        if (dict.separator.isBlank()) {
             val codeName = DictCacheUtils.get(dict.type, dict.nameType, value.toString(), dict.searchType)
             when (dict.serialize) {
                 DictSerializeEnum.DICT_DATA -> gen?.writeObject(codeName)
@@ -48,9 +51,9 @@ class DictSerializer(
             }
             when (dict.serialize) {
                 DictSerializeEnum.DICT_DATA -> gen?.writeObject(codeNames)
-                DictSerializeEnum.CODE_STRING -> gen?.writeString(codeNames.joinToString { it.code!! })
-                DictSerializeEnum.NAME_STRING -> gen?.writeString(codeNames.joinToString { it.name!! })
-                DictSerializeEnum.ID_STRING -> gen?.writeString(codeNames.joinToString { it.id.toString() })
+                DictSerializeEnum.CODE_STRING -> gen?.writeString(codeNames.joinToString(dict.separator) { it.code!! })
+                DictSerializeEnum.NAME_STRING -> gen?.writeString(codeNames.joinToString(dict.separator) { it.name!! })
+                DictSerializeEnum.ID_STRING -> gen?.writeString(codeNames.joinToString(dict.separator) { IdEncryptionUtils.encrypt(it.id!!) })
             }
         }
     }
