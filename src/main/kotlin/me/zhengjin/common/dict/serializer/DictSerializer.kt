@@ -28,8 +28,9 @@ class DictSerializer(
             logger.error("dict annotation not found")
             return
         }
-        if (value == null) {
+        if (value == null || "null" == value) {
             gen?.writeNull()
+            return
         }
         if (dict.separator.isBlank()) {
             val codeName = DictCacheUtils.get(dict.type, dict.nameType, value.toString(), dict.searchType)
