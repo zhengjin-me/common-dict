@@ -109,7 +109,7 @@ class DictService(
             dictRepository.save(vo)
         } else {
             // 界面只能修改字典项
-            check("code", vo.type, vo.code)
+            check("code", vo.type, vo.code, vo.id)
             val dict = dictRepository.findByIdAndDeleteFalse(vo.id!!) ?: throw ServiceException(message = "dict can not be found", type = ServiceException.Exceptions.ILLEGAL_ARGUMENT)
             dict.code = vo.code
             dict.name = vo.name
