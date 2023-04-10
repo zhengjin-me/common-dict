@@ -1,5 +1,6 @@
 package me.zhengjin.common.dict.controller
 
+import me.zhengjin.common.core.encryptor.annotation.IdDecrypt
 import me.zhengjin.common.core.entity.HttpResult
 import me.zhengjin.common.core.entity.PageResult
 import me.zhengjin.common.dict.controller.vo.DictSearchVO
@@ -43,7 +44,7 @@ class DictController(
     }
 
     @PostMapping("/delete")
-    fun delete(@RequestBody ids: List<Long>): HttpResult<String> {
+    fun delete(@RequestBody @IdDecrypt ids: List<Long>): HttpResult<String> {
         dictService.removeDictOrType(ids)
         return HttpResult.ok("操作成功")
     }
@@ -53,7 +54,7 @@ class DictController(
         @RequestParam checkType: String,
         @RequestParam(required = false) dictType: String?,
         @RequestParam(required = false) data: String?,
-        @RequestParam(required = false) id: Long?
+        @RequestParam(required = false) @IdDecrypt id: Long?
     ): HttpResult<String> {
         dictService.check(checkType, dictType, data, id)
         return HttpResult.ok(null)
